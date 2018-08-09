@@ -111,14 +111,51 @@ def depthFirstSearch(problem):
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    from util import Queue
+    fringe = Queue()
+    fringe.push(problem.getStartState())
+
+    final_path = []
+    visited = []
+    current_path = Queue()
+    current_state = fringe.pop()
+
+    while not problem.isGoalState(current_state):
+        if current_state not in visited:
+            visited.append(current_state)
+            successors = problem.getSuccessors(current_state)
+            for action, direction, cost in successors:
+                fringe.push(action)
+                current_path.push(final_path + [direction])
+        current_state = fringe.pop()
+        final_path = current_path.pop()
+    return final_path
 
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    from util import PriorityQueue
+    fringe = PriorityQueue()
+    fringe.push(problem.getStartState(), 0)
+
+    final_path = []
+    visited = []
+    current_path = PriorityQueue()
+    current_state = fringe.pop()
+
+    while not problem.isGoalState(current_state):
+        if current_state not in visited:
+            visited.append(current_state)
+            successors = problem.getSuccessors(current_state)
+            for action, direction, cost in successors:
+                potential_path = final_path + [direction]
+                forward_cost = problem.getCostOfActions(potential_path)
+                if action not in visited:
+                    fringe.push(action, forward_cost)
+                    current_path.push(potential_path, forward_cost)
+        current_state = fringe.pop()
+        final_path = current_path.pop()
+    return final_path
 
 
 def nullHeuristic(state, problem=None):
